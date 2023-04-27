@@ -9,7 +9,7 @@
 
     <com.example.demoapplication.view.ClickTestViewGroup
         android:id="@+id/ClickTestViewGroup"
-        android:layout_width="500dp"
+        android:layout_width="300dp"
         android:layout_height="300dp"
        >
         <com.example.demoapplication.view.ClickTestView

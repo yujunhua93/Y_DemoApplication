@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.HashMap;
 import java.util.List;
@@ -32,31 +33,50 @@ public class ClickTestViewGroup extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         measureChildren(widthMeasureSpec,heightMeasureSpec);
-        int measuredWidth = 0;
-        int measuredHeight = 0;
+        int measuredWidth = 0; //测量的宽
+        int measuredHeight = 0;//测量的高
         int widthSize = MeasureSpec.getSize(widthMeasureSpec);
         int widthMode = MeasureSpec.getMode(widthMeasureSpec);
         int heightSize  = MeasureSpec.getSize(heightMeasureSpec);
         int heightMode = MeasureSpec.getMode(heightMeasureSpec);
+        int lineTop = getPaddingTop(); // 子view开始绘制的上基准线
+        int lineLeft = getPaddingLeft();//子view 开始绘制的
+        int maxLineWidth = widthSize-getPaddingRight(); //父元素总的宽度
+        MarginLayoutParams marginLayoutParams;
+
+        for (int i = 0; i < getChildCount(); i++) {
+            View child = getChildAt(i);
+            marginLayoutParams = (MarginLayoutParams) child.getLayoutParams();
+            int childWidth = child.getMeasuredWidth()+marginLayoutParams.leftMargin + marginLayoutParams.rightMargin +child.getPaddingLeft()+child.getPaddingRight();
+            int childHeight = child.getMeasuredHeight()+marginLayoutParams.topMargin +marginLayoutParams.bottomMargin+child.getPaddingTop()+child.getPaddingBottom();
 
 
-        Map<String, Integer> compute = compute(widthSize-getPaddingLeft()-getPaddingRight());
+            if (lineLeft+childWidth >maxLineWidth){
+                lineTop+=childHeight;
+                lineLeft = getPaddingLeft();
+            }
 
-
-
-        //EXACTLY模式：对应于给定大小或者match_parent情况
-        if (widthMode == MeasureSpec.EXACTLY) {
-            measuredWidth = widthSize;
-            //AT_MOS模式：对应wrap-content（需要手动计算大小，否则相当于match_parent）
-        } else if (widthMode == MeasureSpec.AT_MOST) {
-            measuredWidth = compute.get("allChildWidth");
+            child.setTag(new ChildViewData(lineTop,lineLeft+childWidth,lineTop+childHeight,lineLeft));
+            lineLeft  =  lineLeft+childWidth;
         }
 
-        if (heightMode == MeasureSpec.EXACTLY) {
-            measuredHeight = heightSize;
-        } else if (heightMode == MeasureSpec.AT_MOST) {
-            measuredHeight = compute.get("allChildHeight");
-        }
+//        Map<String, Integer> compute = compute(widthSize-getPaddingLeft()-getPaddingRight());
+
+        measuredWidth = widthSize;
+        measuredHeight = heightSize;
+//        //EXACTLY模式：对应于给定大小或者match_parent情况
+//        if (widthMode == MeasureSpec.EXACTLY) {
+//            measuredWidth = widthSize;
+//            //AT_MOS模式：对应wrap-content（需要手动计算大小，否则相当于match_parent）
+//        } else if (widthMode == MeasureSpec.AT_MOST) {
+//            measuredWidth = compute.get("allChildWidth");
+//        }
+//
+//        if (heightMode == MeasureSpec.EXACTLY) {
+//            measuredHeight = heightSize;
+//        } else if (heightMode == MeasureSpec.AT_MOST) {
+//            measuredHeight = compute.get("allChildHeight");
+//        }
         setMeasuredDimension(measuredWidth,measuredHeight);
     }
 
@@ -124,8 +144,10 @@ public class ClickTestViewGroup extends ViewGroup {
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
-            Rect rect = (Rect) getChildAt(i).getTag();
-            child.layout(rect.left,rect.top,rect.right,rect.bottom);
+//            Rect rect = (Rect) getChildAt(i).getTag();
+//            child.layout(rect.left,rect.top,rect.right,rect.bottom);
+            ChildViewData rect = (ChildViewData) getChildAt(i).getTag();
+            child.layout(rect.getLeft(),rect.getTop(),rect.getRight(),rect.getBottom());
         }
     }
 
@@ -148,20 +170,28 @@ public class ClickTestViewGroup extends ViewGroup {
         return super.dispatchTouchEvent(ev);
     }
 
-    public void addTags(List<String> list) {
+    public void addTags(List<Data> list) {
         //往容器内添加TextView数据
         LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         layoutParams.setMargins(10, 5, 10, 5);
         removeAllViews();
 
         for (int i = 0; i < list.size(); i++) {
+            Data data = list.get(i);
             TextView tv = new TextView(getContext());
             tv.setPadding(28, 10, 28, 10);
-            tv.setText(list.get(i));
+            tv.setText(data.getLabel());
+            
             tv.setMaxEms(10);
             tv.setSingleLine();
 
             tv.setLayoutParams(layoutParams);
+            tv.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Toast.makeText(getContext(), data.getValue(), Toast.LENGTH_SHORT).show();
+                }
+            });
             addView(tv, layoutParams);
         }
     }
