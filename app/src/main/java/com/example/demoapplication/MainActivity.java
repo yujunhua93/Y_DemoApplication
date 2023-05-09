@@ -9,9 +9,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.demoapplication.view.ClickTestViewGroup;
 import com.example.demoapplication.view.Data;
+import com.example.demoapplication.view.TagAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,6 +22,7 @@ public class MainActivity extends AppCompatActivity {
 
     private ClickTestViewGroup clickTestViewGroup;
     private List<Data> list=new ArrayList<>();
+    TagAdapter mTagAdapter = new TagAdapter(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -32,14 +35,28 @@ public class MainActivity extends AppCompatActivity {
         list.add(new Data("python","4"));
 
 
-        clickTestViewGroup.addTags(list);
+        mTagAdapter.setData(list);
+        clickTestViewGroup.setAdapter(mTagAdapter);
+        mTagAdapter.notifyDataSetChange();
 
-//        clickTestViewGroup.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View view) {
-//                clickTestViewGroup.appendTags(list);
-//            }
-//        });
+        clickTestViewGroup.setOnTagclickListener(new ClickTestViewGroup.OnTagclickListener() {
+            @Override
+            public void onTagClick() {
+                Toast.makeText(MainActivity.this, "onTagClick", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+        clickTestViewGroup.setOnTagLongClickListener(new ClickTestViewGroup.OnTagLongClickListener() {
+            @Override
+            public void OnTagLongCLick() {
+                Toast.makeText(MainActivity.this, "OnTagLongCLick", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+
+
+//
 
     }
 

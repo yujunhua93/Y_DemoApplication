@@ -1,6 +1,7 @@
 package com.example.demoapplication.view;
 
 import android.content.Context;
+import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -11,11 +12,27 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.appcompat.content.res.AppCompatResources;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
+import com.example.demoapplication.R;
+
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 public class ClickTestViewGroup extends ViewGroup {
+    private Context context;
+
+    private boolean isShowClose;
+
+    private List<Data> dataList;
+
+    private BaseAdapter mAdapter;
+
+    private DataSetObserver mDataSetObserver;
+
     public ClickTestViewGroup(Context context) {
         this(context,null);
     }
@@ -25,8 +42,9 @@ public class ClickTestViewGroup extends ViewGroup {
     }
 
     public ClickTestViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
-        super(context, attrs, defStyleAttr);
 
+        super(context, attrs, defStyleAttr);
+        this.context = context;
     }
 
 
@@ -42,15 +60,17 @@ public class ClickTestViewGroup extends ViewGroup {
         int lineTop = getPaddingTop(); // 子view开始绘制的上基准线
         int lineLeft = getPaddingLeft();//子view 开始绘制的
         int maxLineWidth = widthSize-getPaddingRight(); //父元素总的宽度
-        MarginLayoutParams marginLayoutParams;
+        LayoutParams marginLayoutParams;
 
         for (int i = 0; i < getChildCount(); i++) {
             View child = getChildAt(i);
-            marginLayoutParams = (MarginLayoutParams) child.getLayoutParams();
-            int childWidth = child.getMeasuredWidth()+marginLayoutParams.leftMargin + marginLayoutParams.rightMargin +child.getPaddingLeft()+child.getPaddingRight();
-            int childHeight = child.getMeasuredHeight()+marginLayoutParams.topMargin +marginLayoutParams.bottomMargin+child.getPaddingTop()+child.getPaddingBottom();
+            marginLayoutParams = child.getLayoutParams();
+            int childWidth = child.getMeasuredWidth();
+            int childHeight = child.getMeasuredHeight();
+//            int childWidth = child.getMeasuredWidth()+marginLayoutParams.leftMargin + marginLayoutParams.rightMargin +child.getPaddingLeft()+child.getPaddingRight();
+//            int childHeight = child.getMeasuredHeight()+marginLayoutParams.topMargin +marginLayoutParams.bottomMargin+child.getPaddingTop()+child.getPaddingBottom();
 
-
+            Log.d("TAG", "onMeasure: "+child.getPaddingLeft()+"*"+child.getPaddingRight()+"*"+child.getPaddingTop()+"*"+child.getPaddingBottom());
             if (lineLeft+childWidth >maxLineWidth){
                 lineTop+=childHeight;
                 lineLeft = getPaddingLeft();
@@ -170,44 +190,118 @@ public class ClickTestViewGroup extends ViewGroup {
         return super.dispatchTouchEvent(ev);
     }
 
-    public void addTags(List<Data> list) {
-        //往容器内添加TextView数据
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 5, 10, 5);
-        removeAllViews();
-
-        for (int i = 0; i < list.size(); i++) {
-            Data data = list.get(i);
-            TextView tv = new TextView(getContext());
-            tv.setPadding(28, 10, 28, 10);
-            tv.setText(data.getLabel());
-            
-            tv.setMaxEms(10);
-            tv.setSingleLine();
-
-            tv.setLayoutParams(layoutParams);
-            tv.setOnClickListener(new OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Toast.makeText(getContext(), data.getValue(), Toast.LENGTH_SHORT).show();
-                }
-            });
-            addView(tv, layoutParams);
-        }
+    public void setTags(List<Data> list) {
+        this.dataList = list;
     }
 
-    public void appendTags(List<String> list) {
-        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        layoutParams.setMargins(10, 5, 10, 5);
-        for (int i = 0; i < list.size(); i++) {
-            TextView tv = new TextView(getContext());
-            tv.setPadding(28, 10, 28, 10);
-            tv.setText(list.get(i));
-            tv.setMaxEms(10);
-            tv.setSingleLine();
+   public void notificationData(){
+       //往容器内添加TextView数据
+       ConstraintLayout.LayoutParams layoutParams = new ConstraintLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+       layoutParams.setMargins(10, 5, 10, 5);
+       removeAllViews();
 
-            tv.setLayoutParams(layoutParams);
-            addView(tv, layoutParams);
+       for (int i = 0; i < dataList.size(); i++) {
+           Data data = dataList.get(i);
+           Tag tv = new Tag(getContext());
+
+           tv.setCloseShow(isShowClose);
+
+
+           tv.setTagText(data.getLabel());
+
+           tv.setLayoutParams(layoutParams);
+           tv.setOnClickListener(new OnClickListener() {
+               @Override
+               public void onClick(View view) {
+                   Toast.makeText(getContext(), data.getValue(), Toast.LENGTH_SHORT).show();
+               }
+           });
+           tv.setOnLongClickListener(new OnLongClickListener() {
+               @Override
+               public boolean onLongClick(View view) {
+                   Toast.makeText(getContext(), "“长按删除”", Toast.LENGTH_SHORT).show();
+                   return true;
+               }
+           });
+           addView(tv, layoutParams);
+       }
+   }
+
+    public interface OnTagclickListener{
+        void onTagClick();
+    }
+
+    private OnTagclickListener onTagclickListener;
+
+    public void setOnTagclickListener(OnTagclickListener onTagclickListener){
+        this.onTagclickListener = onTagclickListener;
+    }
+
+    public interface OnTagLongClickListener{
+        void OnTagLongCLick();
+    }
+
+    private OnTagLongClickListener onTagLongClickListener;
+
+    public void setOnTagLongClickListener(OnTagLongClickListener onTagLongClickListener){
+        this.onTagLongClickListener = onTagLongClickListener;
+    }
+
+
+    public void setAdapter(BaseAdapter adapter){
+        if(mAdapter != null && mDataSetObserver != null){
+            mAdapter.unRegisterDataSetObserver(mDataSetObserver);
+            mAdapter = null;
         }
+
+        if(adapter == null){
+            throw  new NullPointerException("adapter is null");
+        }
+
+        this.mAdapter = adapter;
+
+
+        mDataSetObserver = new DataSetObserver() {
+            @Override
+            public void onChanged() {
+               resetLayout();
+            }
+        };
+
+        mAdapter.registerDataSetObserver(mDataSetObserver);
+        resetLayout();
+
+    }
+
+    protected final void resetLayout(){
+        this.removeAllViews();
+        int counts = mAdapter.getCounts();
+        mAdapter.addViewToList(this);
+        ArrayList<View> views = mAdapter.getViewsList();
+
+        for (int i = 0; i < counts; i++) {
+            views.get(i).setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(onTagclickListener != null){
+                        onTagclickListener.onTagClick();
+                    }
+                }
+            });
+
+            views.get(i).setOnLongClickListener(new OnLongClickListener() {
+
+                @Override
+                public boolean onLongClick(View view) {
+                    if(onTagLongClickListener != null){
+                        onTagLongClickListener.OnTagLongCLick();
+                    }
+                    return true;
+                }
+            });
+            this.addView(views.get(i));
+        }
+
+
     }
 }

@@ -7,17 +7,13 @@
     tools:context=".MainActivity">
 
 
+
     <com.example.demoapplication.view.ClickTestViewGroup
         android:id="@+id/ClickTestViewGroup"
         android:layout_width="300dp"
         android:layout_height="300dp"
        >
-        <com.example.demoapplication.view.ClickTestView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
-            android:background="@color/white">
 
-        </com.example.demoapplication.view.ClickTestView>
     </com.example.demoapplication.view.ClickTestViewGroup>
 
 </LinearLayout>
