@@ -1,12 +1,12 @@
-package com.example.demoapplication.view;
+package com.example.demoapplication.FLowLayout.view;
 
-public class ChildViewData {
+public class ChildViewPoint {
     private int top;
     private int right;
     private int bottom;
     private int left;
 
-    public ChildViewData(int top, int right, int bottom, int left) {
+    public ChildViewPoint(int top, int right, int bottom, int left) {
         this.top = top;
         this.right = right;
         this.bottom = bottom;

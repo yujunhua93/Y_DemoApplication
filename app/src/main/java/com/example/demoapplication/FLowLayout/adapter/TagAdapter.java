@@ -1,12 +1,12 @@
-package com.example.demoapplication.view;
+package com.example.demoapplication.FLowLayout.adapter;
 
 import android.content.Context;
-import android.text.Layout;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import com.example.demoapplication.FLowLayout.model.Data;
 import com.example.demoapplication.R;
 
 import java.util.List;
@@ -31,7 +31,7 @@ public class TagAdapter extends BaseAdapter {
 
 
     @Override
-    int getCounts() {
+    public int getCounts() {
       return  dataList.size();
     }
 

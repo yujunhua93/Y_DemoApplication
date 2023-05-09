@@ -1,4 +1,4 @@
-package com.example.demoapplication.view;
+package com.example.demoapplication.FLowLayout.view;
 
 import android.content.Context;
 import android.util.AttributeSet;

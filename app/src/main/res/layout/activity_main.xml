@@ -8,12 +8,12 @@
 
 
 
-    <com.example.demoapplication.view.ClickTestViewGroup
+    <com.example.demoapplication.FLowLayout.view.FlowLayout
         android:id="@+id/ClickTestViewGroup"
         android:layout_width="300dp"
         android:layout_height="300dp"
        >
 
-    </com.example.demoapplication.view.ClickTestViewGroup>
+    </com.example.demoapplication.FLowLayout.view.FlowLayout>
 
 </LinearLayout>

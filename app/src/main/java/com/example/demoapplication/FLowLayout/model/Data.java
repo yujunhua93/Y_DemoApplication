@@ -1,8 +1,15 @@
-package com.example.demoapplication.view;
+package com.example.demoapplication.FLowLayout.model;
+
+import android.text.TextUtils;
 
 public class Data {
     private String label;
     private String value;
+
+    public Data(String label) {
+        this.label = label;
+        this.value = label;
+    }
 
     public Data(String label, String value) {
         this.label = label;

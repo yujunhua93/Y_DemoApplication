@@ -1,4 +1,4 @@
-package com.example.demoapplication.view;
+package com.example.demoapplication.FLowLayout.view;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -8,21 +8,19 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.appcompat.content.res.AppCompatResources;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.example.demoapplication.R;
+import com.example.demoapplication.FLowLayout.adapter.BaseAdapter;
+import com.example.demoapplication.FLowLayout.model.Data;
 
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public class ClickTestViewGroup extends ViewGroup {
+public class FlowLayout extends ViewGroup {
     private Context context;
 
     private boolean isShowClose;
@@ -33,15 +31,15 @@ public class ClickTestViewGroup extends ViewGroup {
 
     private DataSetObserver mDataSetObserver;
 
-    public ClickTestViewGroup(Context context) {
+    public FlowLayout(Context context) {
         this(context,null);
     }
 
-    public ClickTestViewGroup(Context context, AttributeSet attrs) {
+    public FlowLayout(Context context, AttributeSet attrs) {
         this(context, attrs,0);
     }
 
-    public ClickTestViewGroup(Context context, AttributeSet attrs, int defStyleAttr) {
+    public FlowLayout(Context context, AttributeSet attrs, int defStyleAttr) {
 
         super(context, attrs, defStyleAttr);
         this.context = context;
@@ -76,7 +74,7 @@ public class ClickTestViewGroup extends ViewGroup {
                 lineLeft = getPaddingLeft();
             }
 
-            child.setTag(new ChildViewData(lineTop,lineLeft+childWidth,lineTop+childHeight,lineLeft));
+            child.setTag(new ChildViewPoint(lineTop,lineLeft+childWidth,lineTop+childHeight,lineLeft));
             lineLeft  =  lineLeft+childWidth;
         }
 
@@ -166,7 +164,7 @@ public class ClickTestViewGroup extends ViewGroup {
             View child = getChildAt(i);
 //            Rect rect = (Rect) getChildAt(i).getTag();
 //            child.layout(rect.left,rect.top,rect.right,rect.bottom);
-            ChildViewData rect = (ChildViewData) getChildAt(i).getTag();
+            ChildViewPoint rect = (ChildViewPoint) getChildAt(i).getTag();
             child.layout(rect.getLeft(),rect.getTop(),rect.getRight(),rect.getBottom());
         }
     }

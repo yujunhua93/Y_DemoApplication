@@ -1,4 +1,4 @@
-package com.example.demoapplication.view;
+package com.example.demoapplication.FLowLayout.adapter;
 
 import android.database.DataSetObservable;
 import android.database.DataSetObserver;
@@ -24,7 +24,7 @@ public  abstract  class BaseAdapter {
         mDataSetObservable.notifyChanged();
     }
 
-    abstract int getCounts();
+    public abstract int getCounts();
 
     abstract View getView(int position, ViewGroup parent);
 

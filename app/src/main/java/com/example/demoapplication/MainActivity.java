@@ -5,29 +5,25 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MotionEvent;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.LinearLayout;
-import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.demoapplication.view.ClickTestViewGroup;
-import com.example.demoapplication.view.Data;
-import com.example.demoapplication.view.TagAdapter;
+import com.example.demoapplication.FLowLayout.view.FlowLayout;
+import com.example.demoapplication.FLowLayout.model.Data;
+import com.example.demoapplication.FLowLayout.adapter.TagAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
 
-    private ClickTestViewGroup clickTestViewGroup;
+    private FlowLayout flowLayout;
     private List<Data> list=new ArrayList<>();
     TagAdapter mTagAdapter = new TagAdapter(this);
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        clickTestViewGroup = findViewById(R.id.ClickTestViewGroup);
+        flowLayout = findViewById(R.id.ClickTestViewGroup);
 
         list.add(new Data("android","1"));
         list.add(new Data("Java","2"));
@@ -36,17 +32,17 @@ public class MainActivity extends AppCompatActivity {
 
 
         mTagAdapter.setData(list);
-        clickTestViewGroup.setAdapter(mTagAdapter);
+        flowLayout.setAdapter(mTagAdapter);
         mTagAdapter.notifyDataSetChange();
 
-        clickTestViewGroup.setOnTagclickListener(new ClickTestViewGroup.OnTagclickListener() {
+        flowLayout.setOnTagclickListener(new FlowLayout.OnTagclickListener() {
             @Override
             public void onTagClick() {
                 Toast.makeText(MainActivity.this, "onTagClick", Toast.LENGTH_SHORT).show();
             }
         });
 
-        clickTestViewGroup.setOnTagLongClickListener(new ClickTestViewGroup.OnTagLongClickListener() {
+        flowLayout.setOnTagLongClickListener(new FlowLayout.OnTagLongClickListener() {
             @Override
             public void OnTagLongCLick() {
                 Toast.makeText(MainActivity.this, "OnTagLongCLick", Toast.LENGTH_SHORT).show();
