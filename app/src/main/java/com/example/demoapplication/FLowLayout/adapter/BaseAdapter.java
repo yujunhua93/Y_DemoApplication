@@ -5,7 +5,10 @@ import android.database.DataSetObserver;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.demoapplication.FLowLayout.model.Data;
+
 import java.util.ArrayList;
+import java.util.List;
 
 public  abstract  class BaseAdapter {
     private final DataSetObservable mDataSetObservable = new DataSetObservable();
@@ -46,6 +49,9 @@ public  abstract  class BaseAdapter {
     public ArrayList<View> getViewsList(){
         return  views;
     }
+
+
+    public abstract List<Data> getDataList();
 
 
 

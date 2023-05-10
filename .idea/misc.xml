@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/my_project/DemoApplication/app/src/main/res/drawable/default_tag.xml" value="0.199" />
+        <entry key="..\:/my_project/DemoApplication/app/src/main/res/drawable/selected_tag.xml" value="0.111" />
         <entry key="..\:/my_project/DemoApplication/app/src/main/res/layout/activity_main.xml" value="0.2246376811594203" />
         <entry key="..\:/my_project/DemoApplication/app/src/main/res/layout/tag_item_layout.xml" value="0.6" />
         <entry key="..\:/my_project/DemoApplication/app/src/main/res/layout/tag_layout.xml" value="0.19427083333333334" />

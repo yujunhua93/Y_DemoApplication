@@ -1,6 +1,7 @@
 package com.example.demoapplication.FLowLayout.view;
 
 import android.content.Context;
+import android.content.res.TypedArray;
 import android.database.DataSetObserver;
 import android.graphics.Rect;
 import android.util.AttributeSet;
@@ -14,6 +15,8 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.example.demoapplication.FLowLayout.adapter.BaseAdapter;
 import com.example.demoapplication.FLowLayout.model.Data;
+import com.example.demoapplication.FLowLayout.utils.DensityUtil;
+import com.example.demoapplication.R;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -31,6 +34,14 @@ public class FlowLayout extends ViewGroup {
 
     private DataSetObserver mDataSetObserver;
 
+    private final int DEFAULT_VERTICAL_INTERVAL = 10 ; //垂直间隔
+
+    private final int DEFAULT_HORIZONTAL_INTERVAL = 5; //水平间隔
+
+    private int verticalInterval;
+
+    private int horizontalInterval;
+
     public FlowLayout(Context context) {
         this(context,null);
     }
@@ -43,7 +54,14 @@ public class FlowLayout extends ViewGroup {
 
         super(context, attrs, defStyleAttr);
         this.context = context;
+
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.flowlayoutStyle, defStyleAttr, 0);
+        verticalInterval = a.getDimensionPixelSize(R.styleable.flowlayoutStyle_verticalInternal, DEFAULT_VERTICAL_INTERVAL);
+        horizontalInterval = a.getDimensionPixelSize(R.styleable.flowlayoutStyle_horizontalInternal, DEFAULT_HORIZONTAL_INTERVAL);
+        a.recycle();
     }
+
+
 
 
     @Override
@@ -58,6 +76,8 @@ public class FlowLayout extends ViewGroup {
         int lineTop = getPaddingTop(); // 子view开始绘制的上基准线
         int lineLeft = getPaddingLeft();//子view 开始绘制的
         int maxLineWidth = widthSize-getPaddingRight(); //父元素总的宽度
+
+        int atMostHeight = 0; //子组件实际高度
         LayoutParams marginLayoutParams;
 
         for (int i = 0; i < getChildCount(); i++) {
@@ -72,29 +92,35 @@ public class FlowLayout extends ViewGroup {
             if (lineLeft+childWidth >maxLineWidth){
                 lineTop+=childHeight;
                 lineLeft = getPaddingLeft();
+
+                if(i != getChildCount()-1){
+                    lineTop +=DensityUtil.dp2px(getContext(),verticalInterval);
+                }
+
+                atMostHeight = lineTop + childHeight;
             }
 
             child.setTag(new ChildViewPoint(lineTop,lineLeft+childWidth,lineTop+childHeight,lineLeft));
-            lineLeft  =  lineLeft+childWidth;
+            lineLeft  =  lineLeft+childWidth+ DensityUtil.dp2px(getContext(),horizontalInterval);
         }
 
 //        Map<String, Integer> compute = compute(widthSize-getPaddingLeft()-getPaddingRight());
 
-        measuredWidth = widthSize;
-        measuredHeight = heightSize;
-//        //EXACTLY模式：对应于给定大小或者match_parent情况
-//        if (widthMode == MeasureSpec.EXACTLY) {
-//            measuredWidth = widthSize;
-//            //AT_MOS模式：对应wrap-content（需要手动计算大小，否则相当于match_parent）
-//        } else if (widthMode == MeasureSpec.AT_MOST) {
+//        measuredWidth = widthSize;
+//        measuredHeight = heightSize;
+        //EXACTLY模式：对应于给定大小或者match_parent情况
+        if (widthMode == MeasureSpec.EXACTLY) {
+            measuredWidth = widthSize;
+            //AT_MOS模式：对应wrap-content（需要手动计算大小，否则相当于match_parent）
+        } else if (widthMode == MeasureSpec.AT_MOST) {
 //            measuredWidth = compute.get("allChildWidth");
-//        }
+        }
 //
-//        if (heightMode == MeasureSpec.EXACTLY) {
-//            measuredHeight = heightSize;
-//        } else if (heightMode == MeasureSpec.AT_MOST) {
-//            measuredHeight = compute.get("allChildHeight");
-//        }
+        if (heightMode == MeasureSpec.EXACTLY) {
+            measuredHeight = heightSize;
+        } else if (heightMode == MeasureSpec.AT_MOST) {
+            measuredHeight = atMostHeight;
+        }
         setMeasuredDimension(measuredWidth,measuredHeight);
     }
 
@@ -226,7 +252,7 @@ public class FlowLayout extends ViewGroup {
    }
 
     public interface OnTagclickListener{
-        void onTagClick();
+        void onTagClick(Data data);
     }
 
     private OnTagclickListener onTagclickListener;
@@ -236,7 +262,7 @@ public class FlowLayout extends ViewGroup {
     }
 
     public interface OnTagLongClickListener{
-        void OnTagLongCLick();
+        void OnTagLongCLick(Data data);
     }
 
     private OnTagLongClickListener onTagLongClickListener;
@@ -272,27 +298,30 @@ public class FlowLayout extends ViewGroup {
     }
 
     protected final void resetLayout(){
+
         this.removeAllViews();
         int counts = mAdapter.getCounts();
         mAdapter.addViewToList(this);
         ArrayList<View> views = mAdapter.getViewsList();
 
         for (int i = 0; i < counts; i++) {
+            int finalI = i;
             views.get(i).setOnClickListener(new OnClickListener() {
                 @Override
                 public void onClick(View view) {
                     if(onTagclickListener != null){
-                        onTagclickListener.onTagClick();
+                        onTagclickListener.onTagClick(mAdapter.getDataList().get(finalI));
                     }
                 }
             });
+
 
             views.get(i).setOnLongClickListener(new OnLongClickListener() {
 
                 @Override
                 public boolean onLongClick(View view) {
                     if(onTagLongClickListener != null){
-                        onTagLongClickListener.OnTagLongCLick();
+                        onTagLongClickListener.OnTagLongCLick(mAdapter.getDataList().get(finalI));
                     }
                     return true;
                 }
@@ -302,4 +331,7 @@ public class FlowLayout extends ViewGroup {
 
 
     }
+
+
+
 }

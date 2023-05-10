@@ -9,6 +9,7 @@ import android.widget.TextView;
 import com.example.demoapplication.FLowLayout.model.Data;
 import com.example.demoapplication.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TagAdapter extends BaseAdapter {
@@ -30,6 +31,8 @@ public class TagAdapter extends BaseAdapter {
     }
 
 
+
+
     @Override
     public int getCounts() {
       return  dataList.size();
@@ -42,4 +45,21 @@ public class TagAdapter extends BaseAdapter {
         textView.setText(dataList.get(position).getLabel());
         return view;
     }
+
+    @Override
+    public List<Data> getDataList() {
+        return dataList;
+    }
+
+
+    public List<Data> getALlSelectedData(){
+        ArrayList<Data> selectedDatas = new ArrayList<>();
+        for (int i = 0; i < dataList.size(); i++) {
+            if(dataList.get(i).isSelected()){
+                selectedDatas.add(dataList.get(i));
+            }
+        }
+        return selectedDatas;
+    }
+
 }

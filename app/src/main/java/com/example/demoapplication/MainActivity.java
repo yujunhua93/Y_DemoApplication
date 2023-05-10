@@ -30,6 +30,20 @@ public class MainActivity extends AppCompatActivity {
         list.add(new Data("IOS","3"));
         list.add(new Data("python","4"));
 
+        list.add(new Data("android","1"));
+        list.add(new Data("Java","2"));
+        list.add(new Data("IOS","3"));
+        list.add(new Data("python","4"));
+
+        list.add(new Data("android","1"));
+        list.add(new Data("Java","2"));
+        list.add(new Data("IOS","3"));
+        list.add(new Data("python","4"));
+
+        list.add(new Data("android","1"));
+        list.add(new Data("Java","2"));
+        list.add(new Data("IOS","3"));
+        list.add(new Data("python","4"));
 
         mTagAdapter.setData(list);
         flowLayout.setAdapter(mTagAdapter);
@@ -37,22 +51,19 @@ public class MainActivity extends AppCompatActivity {
 
         flowLayout.setOnTagclickListener(new FlowLayout.OnTagclickListener() {
             @Override
-            public void onTagClick() {
-                Toast.makeText(MainActivity.this, "onTagClick", Toast.LENGTH_SHORT).show();
+            public void onTagClick(Data data) {
+
+
+                Toast.makeText(MainActivity.this, data.getValue(), Toast.LENGTH_SHORT).show();
             }
         });
 
         flowLayout.setOnTagLongClickListener(new FlowLayout.OnTagLongClickListener() {
             @Override
-            public void OnTagLongCLick() {
-                Toast.makeText(MainActivity.this, "OnTagLongCLick", Toast.LENGTH_SHORT).show();
+            public void OnTagLongCLick(Data data) {
+                Toast.makeText(MainActivity.this, data.getValue(), Toast.LENGTH_SHORT).show();
             }
         });
-
-
-
-
-//
 
     }
 

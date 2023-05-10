@@ -10,8 +10,8 @@
 
     <com.example.demoapplication.FLowLayout.view.FlowLayout
         android:id="@+id/ClickTestViewGroup"
-        android:layout_width="300dp"
-        android:layout_height="300dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
        >
 
     </com.example.demoapplication.FLowLayout.view.FlowLayout>
